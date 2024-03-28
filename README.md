@@ -1,2 +1,2 @@
-# field-algorithm
- Get information of an agricultural field from an image with an NodeJS app.
+# tile fetcher
+ Get any satellite tile from an tomtom satellite map.
