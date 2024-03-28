@@ -5,35 +5,36 @@ import path from 'path';
 
 const API_KEY = process.env.API_KEY;
 
-function fetchTile() {
-    const zoom: number = 15;
-    const coord_x: number = 51.13;
-    const coord_y: number = 14.83;
-
-    const filePath = path.join(__dirname, 'out', 'tests', 'example_fetched.png');
-    const dirPath = path.dirname(filePath);
-    fs.mkdirSync(dirPath, { recursive: true });
-
-    const tileCoords = coordsToTile(coord_x, coord_y, zoom);
-
-    const url = `http://api.tomtom.com/map/1/tile/sat/main/${zoom}/${tileCoords.tile_x}/${tileCoords.tile_y}.jpg?key=${API_KEY}`;
-    const request = http.get(url, (r) => {
-        const fileStream = fs.createWriteStream(filePath);
-        r.pipe(fileStream);
-
-        r.on('end', () => {
-            console.log(`[INFO] Fetched Image Successfully to ${filePath}`);
-            processImage(filePath);
-        })
-    });
-
-    request.on('error', (e) => {
-        throw new Error(`[ERROR] ${e}`);
-    });
+interface Coordinates {
+    lat: number
+    lng: number
 }
 
-function processImage(imagePath: string) {
+function fetchTile(coords: Coordinates[]) {
+    const zoom: number = 15;
 
+    coords.forEach((coord, idx) => {
+        const { lat, lng } = coord;
+        const tileCoord = coordsToTile(lat, lng, zoom);
+
+        const filePath = path.join(__dirname, 'out', `tile_${idx}.jpg`);
+        const dirPath = path.dirname(filePath);
+        fs.mkdirSync(dirPath, { recursive: true });
+
+        const url = `http://api.tomtom.com/map/1/tile/sat/main/${zoom}/${tileCoord.tile_x}/${tileCoord.tile_y}.jpg?key=${API_KEY}`;
+        const request = http.get(url, (r) => {
+            const fileStream = fs.createWriteStream(filePath);
+            r.pipe(fileStream);
+
+            r.on('end', () => {
+                console.log(`[INFO] Fetched Image Successfully to ${filePath}`);
+            })
+        });
+
+        request.on('error', (e) => {
+            throw new Error(`[ERROR] ${e}`);
+        });
+    });
 }
 
 function coordsToTile(lat: number, lng: number, zoom: number): { tile_x: number, tile_y: number } {
@@ -60,4 +61,15 @@ function coordsToTile(lat: number, lng: number, zoom: number): { tile_x: number,
     return tileCoords;
 }
 
-fetchTile();
+const fcrd: Coordinates[] = [
+    { lat: 52.776969, lng: 11.626134 },
+    { lat: 52.639827, lng: 11.79509 },
+    { lat: 52.490334, lng: 12.164017 },
+    { lat: 53.561429, lng: 12.818514 },
+    { lat: 49.710396, lng: 11.269056 },
+    { lat: 49.41394, lng: 12.606031 },
+    { lat: 50.579135, lng: 12.965492 },
+    { lat: 51.222271, lng: 14.756783 },
+]
+
+// fetchTile(fcrd);
