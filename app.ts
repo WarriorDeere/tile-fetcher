@@ -62,14 +62,7 @@ function coordsToTile(lat: number, lng: number, zoom: number): { tile_x: number,
 }
 
 const fcrd: Coordinates[] = [
-    { lat: 52.776969, lng: 11.626134 },
-    { lat: 52.639827, lng: 11.79509 },
-    { lat: 52.490334, lng: 12.164017 },
-    { lat: 53.561429, lng: 12.818514 },
-    { lat: 49.710396, lng: 11.269056 },
-    { lat: 49.41394, lng: 12.606031 },
-    { lat: 50.579135, lng: 12.965492 },
-    { lat: 51.222271, lng: 14.756783 },
+    { lat: 0.0, lng: 0.0 },
 ]
 
-// fetchTile(fcrd);
+fetchTile(fcrd);
